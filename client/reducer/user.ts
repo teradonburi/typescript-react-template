@@ -1,10 +1,10 @@
 import { reducerWithInitialState } from 'typescript-fsa-reducers'
-import { model } from 'interface'
+import { route } from 'interface'
 import { loadAction } from '../action/user'
 
 
 interface ReduxState {
-  users?: model.User[];
+  users?: route.User[];
 }
 
 // 初期化オブジェクト

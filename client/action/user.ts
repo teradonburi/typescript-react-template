@@ -1,12 +1,12 @@
 import actionCreatorFactory from 'typescript-fsa'
 import { AxiosInstance } from 'axios'
 import { Store } from 'redux'
-import { model } from 'interface'
+import { route } from 'interface'
 
 const actionCreator = actionCreatorFactory()
 
 // typescript-fsaで<params,result,error>の型を定義
-export const loadAction = actionCreator.async<{}, {users: model.User[]}, {error: Error}>('user/LOAD')
+export const loadAction = actionCreator.async<{}, {users: route.User[]}, {error: Error}>('user/LOAD')
 
 // actionの定義
 export function load() {

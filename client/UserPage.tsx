@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux'
 import { load } from './action/user'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { model } from 'interface'
+import { route } from 'interface'
 
 import { withStyles } from '@material-ui/core/styles'
 import {
@@ -20,7 +20,7 @@ import {
 import { Email } from '@material-ui/icons'
 import { orange } from '@material-ui/core/colors'
 interface ReduxState {
-  user: { users: model.User[] };
+  user: { users: route.User[] };
 }
 
 // connectでwrap
@@ -37,7 +37,7 @@ interface UserPageProps {
   bgcolor: string;
 }
 interface UserPageState {
-  user: model.User | null;
+  user: route.User | null;
 }
 
 interface Classes {
@@ -71,7 +71,7 @@ class UserPage extends React.Component<Props, State> {
     this.props.load()
   }
 
-  handleClickOpen(user: model.User): void {
+  handleClickOpen(user: route.User): void {
     this.setState({ user })
   }
 
@@ -100,7 +100,7 @@ class UserPage extends React.Component<Props, State> {
               // ループで展開する要素には一意なkeyをつける（ReactJSの決まり事）
               <Card key={user.email} style={{ marginTop: '10px' }}>
                 <CardContent className={classes.card}>
-                  <Avatar src={user.picture.thumbnail} />
+                  <Avatar src={user.picture?.thumbnail} />
                   <p className={classes.name}>
                     {'名前:' + user?.name?.first + ' ' + user?.name?.last}
                   </p>

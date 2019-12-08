@@ -6,9 +6,13 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { ChunkExtractor } from '@loadable/server'
 import reducer from '../client/reducer/reducer'
-import { model } from 'interface'
+import { model, route } from 'interface'
 
 const app = express()
+
+import {default as mongoose} from 'mongoose'
+mongoose.connect('mongodb://localhost/typescript-react-template', { useNewUrlParser: true, useUnifiedTopology: true})
+import { User } from './models'
 
 // APIエラーハンドリング
 const wrap = (fn: (req: Request, res: Response, next?: NextFunction) => Promise<Response | undefined>) => (req: Request, res: Response, next?: NextFunction): Promise<Response | undefined> => fn(req, res, next).catch((err: Error) => {
@@ -48,11 +52,14 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(express.static(path.join(__dirname, '../public')))
 
-// 今回はダミーデータ、本来はDBから取得する
-const users: model.User[] = [{gender: 'male', name: {first: 'テスト', last: '太郎'}, email: 'test@gmail.com', picture: {thumbnail: 'https://avatars1.githubusercontent.com/u/771218?s=460&v=4'}}]
-app.get('/api/users', wrap(async (_: Request, res: Response): Promise<Response | undefined> => {
-  return res.json(users)
-}))
+import { users } from './routes'
+
+app.use(
+  '/api/users',
+  express.Router()
+    .get('/', wrap(users.index))
+    .post('/', wrap(users.create))
+)
 
 // Redux
 import { createStore } from 'redux'
@@ -78,7 +85,22 @@ app.get(
   async (req: Request, res: Response) => {
 
     // 疑似ユーザ作成（本来はDBからデータを取得して埋め込む)
-    const initialData = req.url === '/' ? { user: {users} } : {}
+    let initialData: ({user?: {users: route.User[]}} | {}) = {}
+    if (req.url === '/') {
+      const users: model.User[] = await User.find().lean({virtuals: true})
+      initialData = {user: {users: users.map(u => ({
+        gender: u.gender,
+        name: {
+          first: u.first,
+          last: u.last,
+        },
+        email: u.email,
+        picture: {
+          thumbnail: u.thumbnail,
+        },
+      }))}}
+    }
+
     // Redux Storeの作成(initialDataには各Componentが参照するRedux Storeのstateを代入する)
     const store = createStore(reducer, initialData)
 
