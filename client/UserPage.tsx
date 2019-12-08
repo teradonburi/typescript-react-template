@@ -3,6 +3,8 @@ import { connect, ConnectedProps } from 'react-redux'
 import { load } from './action/user'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
+import { Form, Field } from 'react-final-form'
+import { ValidationErrors, SubmissionErrors } from 'final-form'
 import { route } from 'interface'
 
 import { withStyles } from '@material-ui/core/styles'
@@ -19,8 +21,17 @@ import {
 } from '@material-ui/core'
 import { Email } from '@material-ui/icons'
 import { orange } from '@material-ui/core/colors'
+import TextInput from './mui-form/TextInput'
+
 interface ReduxState {
   user: { users: route.User[] };
+}
+
+interface FormValues {
+  gender: string;
+  first: string;
+  last: string;
+  email: string;
 }
 
 // connectでwrap
@@ -38,6 +49,7 @@ interface UserPageProps {
 }
 interface UserPageState {
   user: route.User | null;
+  open: boolean;
 }
 
 interface Classes {
@@ -60,9 +72,12 @@ class UserPage extends React.Component<Props, State> {
     super(props)
     this.state = {
       user: null,
+      open: false,
     }
     this.handleClickOpen = this.handleClickOpen.bind(this)
     this.handleRequestClose = this.handleRequestClose.bind(this)
+    this.validate = this.validate.bind(this)
+    this.submit = this.submit.bind(this)
   }
 
   componentDidMount(): void {
@@ -77,6 +92,16 @@ class UserPage extends React.Component<Props, State> {
 
   handleRequestClose(): void {
     this.setState({ user: null })
+  }
+
+  validate(values: FormValues): ValidationErrors {
+    const errors = {}
+    console.log(values)
+    return errors
+  }
+
+  submit(values: FormValues): (SubmissionErrors | Promise<SubmissionErrors | undefined> | void) {
+    console.log(values)
   }
 
   render(): JSX.Element {
@@ -131,6 +156,21 @@ class UserPage extends React.Component<Props, State> {
             <DialogContent>{this.state.user?.email}</DialogContent>
           </Dialog>
         )}
+        <Dialog
+          open={this.state.open}
+          onClose={(): void => this.handleRequestClose()}
+        >
+          <DialogTitle>新規ユーザ</DialogTitle>
+          <DialogContent>
+            <Form onSubmit={this.submit} validate={this.validate}>
+              {({handleSubmit}): JSX.Element =>
+                <form onSubmit={handleSubmit}>
+                  <Field name='first' component={TextInput} />
+                </form>
+              }
+            </Form>
+          </DialogContent>
+        </Dialog>
       </div>
     )
   }
