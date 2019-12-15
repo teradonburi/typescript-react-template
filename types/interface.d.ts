@@ -23,3 +23,10 @@ export namespace route {
     };
   }
 }
+
+export namespace redux {
+  export interface User {
+    users?: route.User[];
+    user?: route.User | null;
+  }
+}

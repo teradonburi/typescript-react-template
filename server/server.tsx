@@ -2,6 +2,7 @@
 import path from 'path'
 import { Request, Response, NextFunction } from 'express'
 import express from 'express'
+import bodyParser from 'body-parser'
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { ChunkExtractor } from '@loadable/server'
@@ -51,6 +52,8 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.use(express.static(path.join(__dirname, '../public')))
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
 
 import { users } from './routes'
 
@@ -68,7 +71,7 @@ import { Provider } from 'react-redux'
 import { StaticRouter } from 'react-router-dom'
 import { Router } from '../client/Router'
 // Material-UI SSR
-import { ServerStyleSheets, ThemeProvider } from '@material-ui/styles'
+import { ServerStyleSheets, MuiThemeProvider } from '@material-ui/core/styles'
 import theme from '../client/theme'
 // Helmet
 import { HelmetProvider } from 'react-helmet-async'
@@ -117,13 +120,13 @@ app.get(
     const App: React.SFC = () => (
       sheets.collect(
         <HelmetProvider context={helmetContext}>
-          <ThemeProvider theme={theme}>
+          <MuiThemeProvider theme={theme}>
             <Provider store={store}>
               <StaticRouter location={req.url} context={context}>
                 <Router />
               </StaticRouter>
             </Provider>
-          </ThemeProvider>
+          </MuiThemeProvider>
         </HelmetProvider>
       )
     )

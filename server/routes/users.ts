@@ -20,7 +20,8 @@ async function index(req: Request, res: Response): Promise<Response | undefined>
 }
 
 async function create(req: Request, res: Response): Promise<Response | undefined> {
-  const user: route.User = {gender: 'male', name: {first: 'テスト', last: '太郎'}, email: 'test@gmail.com'}
+  const user = req.body
+  // const user: route.User = {gender: 'male', name: {first: 'テスト', last: '太郎'}, email: 'test@gmail.com'}
   const result = await User.create({
     gender: user.gender,
     first: user.name?.first,

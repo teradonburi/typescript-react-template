@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
-import { ThemeProvider } from '@material-ui/styles'
+import { MuiThemeProvider } from '@material-ui/core/styles'
 import { loadableReady } from '@loadable/component'
 import client from 'axios'
 import thunk from 'redux-thunk'
@@ -54,11 +54,11 @@ const App: React.FC = ({ children }) => {
 
   return (
     <HelmetProvider>
-      <ThemeProvider theme={theme}>
+      <MuiThemeProvider theme={theme}>
         <Provider store={store}>
           <BrowserRouter>{children}</BrowserRouter>
         </Provider>
-      </ThemeProvider>
+      </MuiThemeProvider>
     </HelmetProvider>
   )
 }
